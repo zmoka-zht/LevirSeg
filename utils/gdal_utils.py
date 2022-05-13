@@ -68,6 +68,25 @@ def read_img(data_file:str, width_offset:int, height_offset:int, width:int, heig
 
     return img_data
 
+def save_img(result_file:str, img:np.array, img_width:int, ing_height:int, img_bands:int, geoTransfor):
+    '''
+
+    :param result_file:
+    :param img:
+    :param img_width:
+    :param ing_height:
+    :param img_bansd:
+    :param geoTransfor:
+    :return:
+    '''
+    driver = gdal.GetDriverByName("GTIFF")
+    dataset = driver.Create(result_file, img_width, ing_height, img_bands, gdal.GDT_Byte)
+    if geoTransfor:
+        dataset.SetGeoTransform(geoTransfor)
+    for i in range(img_bands):
+        dataset.GetRasterBand(i+1).WriteArray(img[i])
+
+
 
 if __name__=="__main__":
     data_file = r'/data02/zht_vqa/change_detection/LearnGroup/S2A_MSIL2A_20200810T030551_N9999_R075_T50SLJ_m10.tiff'
@@ -77,3 +96,4 @@ if __name__=="__main__":
     # print(type(geo_trans))
     img = read_img(data_file, 1024, 1024, 512, 512, [3, 2, 1])
     print(img.shape)
+    save_img('1.tiff', img, 512, 512, 3, None)
