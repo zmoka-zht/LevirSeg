@@ -1,5 +1,6 @@
 import torch.optim as optim
 import torch
+from model import builder
 
 #创建optims的字典
 optims_dict = {'SGD':optim.SGD,
@@ -16,9 +17,11 @@ def build_optim(name:str='SGD', **kwargs):
     if name in optims_dict.keys():
         return optims_dict[name](**kwargs)
     else:
-        raise NotImplementedError("name %s not available values.".format(name))
+        raise NotImplementedError("name not available values.".format(name))
 
 if __name__=='__main__':
 
-    opt = build_optim('SGD')
+    model = builder.build_model('seg_net')
+
+    opt = build_optim('SGD', params=model.parameters(), lr=0.01)
     print(opt)
