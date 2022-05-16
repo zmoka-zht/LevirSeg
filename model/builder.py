@@ -2,11 +2,12 @@ import torch
 import torch.nn as nn
 from model.resnetfcn import ResNet50FCN
 from model.cls_net import ClsNet
-from model.seg_net import SegNet
+from model.seg_net import SegNet, SegNetz
 
 #创建model字典
 model_dict = {'cls_net':ClsNet,
               'seg_net':SegNet,
+              'seg_netz': SegNetz,
               'resnet50fcn':ResNet50FCN}
 
 #创建build函数
