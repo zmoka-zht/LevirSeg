@@ -24,6 +24,10 @@ class SegInterface(object):
         self.best_val_mf1 = 0.
         self.best_epoch_id =0
         self.load_epoch_id = 0
+        self.train_loss_list = list()
+        self.val_loss_list = list()
+        self.train_mf1_list = list()
+        self.val_mf1_list = list()
 
 
     def tain(self):
@@ -92,6 +96,8 @@ class SegInterface(object):
                     message_class_list = ['{key}: {value:.5f} '.format(key=key, value=value.item()) for key, value in score_dict_batch.items()]
                     message_class = ''.join(map(str, message_class_list)) + '\n'
                     print(message + message_class)
+                    self.train_loss_list.append(train_loss.item())
+                    np.save(os.path.join(checkpoint_path, 'train_loss.npy'), self.train_loss_list)
             #计算每个epoch的精度
             score_dict_epoch = metric.get_metric_dict_per_epoch()
             self.epoch_mf1 = score_dict_epoch['mF1']
@@ -99,6 +105,8 @@ class SegInterface(object):
             message_class_list = ['{key}: {value:.5f} '.format(key=key, value=value.item()) for key, value in score_dict_epoch.items()]
             message_class = ''.join(map(str, message_class_list)) + '\n\n'
             print(message + message_class)
+            self.train_mf1_list.append(self.epoch_mf1.cpu())
+            np.save(os.path.join(checkpoint_path, 'train_mf1.npy'), self.train_mf1_list)
             #开始验证
             print("......Begin Evaluation......")
             metric.clear()
@@ -123,6 +131,8 @@ class SegInterface(object):
                                               score_dict_batch.items()]
                         message_class = ''.join(map(str, message_class_list)) + '\n'
                         print(message + message_class)
+                        self.val_loss_list.append(val_loss.item())
+                        np.save(os.path.join(checkpoint_path, 'val_loss.npy'), self.val_loss_list)
                 # 计算每个epoch的精度
                 score_dict_epoch = metric.get_metric_dict_per_epoch()
                 self.epoch_mf1 = score_dict_epoch['mF1']
@@ -131,6 +141,8 @@ class SegInterface(object):
                                       score_dict_epoch.items()]
                 message_class = ''.join(map(str, message_class_list)) + '\n\n'
                 print(message + message_class)
+                self.val_mf1_list.append(self.epoch_mf1.cpu())
+                np.save(os.path.join(checkpoint_path, 'val_mf1.npy'), self.val_mf1_list)
             #保存当前模型且判断最优模型
             save_checkpoint(ckpt_name='last_ckpt.pt', epoch_id=epoch_id,
                             model_dict=self.mode.state_dict(), path=checkpoint_path)
