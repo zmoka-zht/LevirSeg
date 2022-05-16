@@ -23,12 +23,12 @@ class segmengtion_metric(object):
     def __init__(self, num_class:int, device:str):
         self.num_class = num_class
         self.device = device
-        #self.confusion_matrix = torch.zeros((self.num_class, self.num_class)).to(self.device)
-        self.confusion_matrix = torch.zeros((self.num_class, self.num_class))
+        self.confusion_matrix = torch.zeros((self.num_class, self.num_class)).to(self.device)
+        #self.confusion_matrix = torch.zeros((self.num_class, self.num_class))
 
     def clear(self):
-        #self.confusion_matrix = torch.zeros((self.num_class, self.num_class)).to(self.device)
-        self.confusion_matrix = torch.zeros((self.num_class, self.num_class))
+        self.confusion_matrix = torch.zeros((self.num_class, self.num_class)).to(self.device)
+        #self.confusion_matrix = torch.zeros((self.num_class, self.num_class))
 
     def update_confusion_matrix(self, gt, pred):
         cm = calcuate_confusion_matrix(self.num_class, gt, pred)
